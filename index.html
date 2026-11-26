@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Library Information System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Library Information System</h1>
+    <div class="nav-links">
+      <a href="create.html">Add New Book</a>
+      <button type="button" id="resetBtn">Reset Sample Data</button>
+    </div>
+    <div id="tableArea"></div>
+  </div>
+
+  <script src="storage.js"></script>
+  <script>
+    const tableArea = document.getElementById("tableArea");
+    const records = getRecords().slice().reverse();
+
+    if (records.length === 0) {
+      tableArea.innerHTML = '<p class="muted">No records found.</p>';
+    } else {
+      const rows = records.map(r => `
+        <tr>
+          <td>${r.id}</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>${r.copies}</td>
+          <td>
+            <a href="view.html?id=${r.id}">View</a>
+            <a href="edit.html?id=${r.id}">Edit</a>
+            <a href="delete.html?id=${r.id}">Delete</a>
+          </td>
+        </tr>
+      `).join("");
+
+      tableArea.innerHTML = `
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th><th>Title</th><th>Author</th><th>Category</th><th>Copies</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      `;
+
+      const trList = tableArea.querySelectorAll("tbody tr");
+      records.forEach((r, idx) => {
+        trList[idx].children[1].textContent = r.title;
+        trList[idx].children[2].textContent = r.author;
+        trList[idx].children[3].textContent = r.category;
+      });
+    }
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      resetSampleData();
+      location.reload();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Book</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Add Book</h1>
+    <div class="nav-links"><a href="index.html">Back</a></div>
+    <div id="errors"></div>
+
+    <form id="bookForm">
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" maxlength="150" required>
+      </div>
+      <div class="form-group">
+        <label for="author">Author</label>
+        <input type="text" id="author" name="author" maxlength="100" required>
+      </div>
+      <div class="form-group">
+        <label for="category">Category</label>
+        <input type="text" id="category" name="category" maxlength="50" required>
+      </div>
+      <div class="form-group">
+        <label for="copies">Copies</label>
+        <input type="number" id="copies" name="copies" min="0" step="1" required>
+      </div>
+      <button type="submit">Save Book</button>
+    </form>
+  </div>
+
+  <script src="storage.js"></script>
+  <script>
+    document.getElementById("bookForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const title = document.getElementById("title").value.trim();
+      const author = document.getElementById("author").value.trim();
+      const category = document.getElementById("category").value.trim();
+      const copiesRaw = document.getElementById("copies").value.trim();
+      const errors = [];
+
+      if (!title || title.length > 150) errors.push("Title is required (max 150 characters).");
+      if (!author || author.length > 100) errors.push("Author is required (max 100 characters).");
+      if (!category || category.length > 50) errors.push("Category is required (max 50 characters).");
+      if (!/^\d+$/.test(copiesRaw) || Number(copiesRaw) < 0) errors.push("Copies must be a whole number 0 or greater.");
+
+      if (errors.length) {
+        document.getElementById("errors").innerHTML =
+          '<div class="error-box"><ul>' + errors.map(err => `<li>${err}</li>`).join("") + "</ul></div>";
+        return;
+      }
+
+      addRecord({ title, author, category, copies: Number(copiesRaw) });
+      window.location.href = "index.html";
+    });
+  </script>
+</body>
+</html>
